@@ -1,0 +1,40 @@
+name: Assemble tour video
+on:
+  push:
+    branches: [main]
+    paths: ['.upload/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore and verify original MP4
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          parts = sorted(Path('.upload').glob('video.part*'))
+          if not parts:
+              print('Video is already assembled')
+              raise SystemExit(0)
+          assert len(parts) == 12, 'Missing video parts'
+          data = b''.join(p.read_bytes() for p in parts)
+          assert len(data) == 49080193
+          assert hashlib.sha256(data).hexdigest() == 'd3c2c1b66fb9e513bf3256a9dd5843d6e4571a27d65f97e3ad79fcae2dde0a9b'
+          Path('videos').mkdir(exist_ok=True)
+          Path('videos/R0011277_st.MP4').write_bytes(data)
+          for p in parts:
+              p.unlink()
+          print('Original MP4 restored and verified')
+      - name: Save original MP4 in repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A videos .upload
+          if ! git diff --cached --quiet; then
+            git commit -m "Restore verified original tour video"
+            git push
+          fi
