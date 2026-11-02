@@ -54,7 +54,6 @@
       <max fov="120" fovfisheye="360" fovstereographic="270" pan="360" scaletofit="0" tilt="90"/>
     </view>
     <hotspots>
-      <hotspot description="" id="Point01" pan="82" skinid="ht_node" target="" tilt="20" title="Коридор — начало тура" url="{node3}"/>
       <hotspot description="" id="Point02" pan="-147.93" skinid="ht_node" target="" tilt="-19.25" title="Холл с турникетами" url="{node4}"/>
       <hotspot description="" id="Point03" pan="161.07" skinid="ht_node" target="" tilt="-26.62" title="" url="{node5}"/>
     </hotspots>
